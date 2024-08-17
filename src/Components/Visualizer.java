@@ -8,17 +8,17 @@ import java.util.Random;
 public class Visualizer extends JPanel {
     private final int WIDTH = 1000;
     private final int HEIGHT = WIDTH * 9 / 16;
-    private final int SIZE = 200;
+    private final int SIZE = 500;
     private final float BAR_WIDTH = (float) WIDTH / SIZE;
     private final float[] barHeight = new float[SIZE];
-    private SwingWorker<Void, Void> shuffler;
+    private SwingWorker<Void, Void> shuffler, sorter;
 
     private Visualizer() {
         setBackground(Color.BLACK);
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
         initBarHeight();
+        initSorter();
         initShuffler();
-
     }
 
     @Override
@@ -41,6 +41,26 @@ public class Visualizer extends JPanel {
         }
     }
 
+    private void initSorter() {
+        sorter = new SwingWorker<>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                for (int i = 1; i < SIZE; i++) {
+                    int j = i - 1;
+                    float key = barHeight[i];
+                    while (j >= 0 && barHeight[j] > key) {
+                        barHeight[j + 1] = barHeight[j];
+                        j--;
+                    }
+                    barHeight[j + 1] = key;
+                    Thread.sleep(2);
+                    repaint();
+                }
+                return null;
+            }
+        };
+    }
+
     private void initShuffler() {
         shuffler = new SwingWorker<>() {
             @Override
@@ -53,8 +73,15 @@ public class Visualizer extends JPanel {
                 repaint();
                 return null;
             }
+
+            @Override
+            public void done() {
+                super.done();
+                sorter.execute();
+            }
         };
         shuffler.execute();
+
     }
 
     private void swap(int indexA, int indexB) {
