@@ -2,12 +2,13 @@ package Components;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
 
 public class Visualizer extends JPanel {
     private final int WIDTH = 1000;
     private final int HEIGHT = WIDTH * 9 / 16;
     private final int SIZE = 200;
-    private final int BAR_WIDTH = WIDTH / SIZE;
+    private final float BAR_WIDTH = (float) WIDTH / SIZE;
     private final float[] barHeight = new float[SIZE];
 
     private Visualizer() {
@@ -20,17 +21,19 @@ public class Visualizer extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        g.setColor(Color.CYAN);
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setColor(Color.CYAN);
+        Rectangle2D bar;
         for (int i = 0; i < SIZE; i++) {
-            g.drawRect(i * BAR_WIDTH, 0, BAR_WIDTH, (int) barHeight[i]);
+            bar = new Rectangle2D.Float(i * BAR_WIDTH, 0, BAR_WIDTH, barHeight[i]);
+            g2d.fill(bar);
         }
-
     }
 
     private void initBarHeight() {
         float interval = (float) HEIGHT / SIZE;
         for (int i = 1; i <= SIZE; i++) {
-            barHeight[i - 1] = i * interval;
+            barHeight[i - 1] = i * interval;l
         }
     }
 
@@ -44,7 +47,6 @@ public class Visualizer extends JPanel {
             frame.pack();
             frame.setLocationRelativeTo(null); //Set Frame at Centre of Screen
             frame.setVisible(true);
-
         });
     }
 }
