@@ -12,6 +12,7 @@ public class Visualizer extends JPanel {
     private final float BAR_WIDTH = (float) WIDTH / SIZE;
     private final float[] barHeight = new float[SIZE];
     private SwingWorker<Void, Void> shuffler, sorter;
+    private int curr_index, key_index;
 
     private Visualizer() {
         setBackground(Color.BLACK);
@@ -26,10 +27,17 @@ public class Visualizer extends JPanel {
         super.paintComponent(g);
 
         Graphics2D g2d = (Graphics2D) g;
-        g2d.setColor(Color.CYAN);
         Rectangle2D bar;
         for (int i = 0; i < SIZE; i++) {
+            g2d.setColor(Color.CYAN);
+            if (i == curr_index) {
+                g2d.setColor(Color.yellow);
+            }
+            if(i==key_index){
+                g2d.setColor(Color.red);
+            }
             bar = new Rectangle2D.Float(i * BAR_WIDTH, 0, BAR_WIDTH, barHeight[i]);
+
             g2d.fill(bar);
         }
     }
@@ -45,15 +53,16 @@ public class Visualizer extends JPanel {
         sorter = new SwingWorker<>() {
             @Override
             protected Void doInBackground() throws Exception {
-                for (int i = 1; i < SIZE; i++) {
-                    int j = i - 1;
-                    float key = barHeight[i];
-                    while (j >= 0 && barHeight[j] > key) {
-                        barHeight[j + 1] = barHeight[j];
-                        j--;
+                for (key_index = 1; key_index < SIZE; key_index++) {
+                    curr_index = key_index - 1;
+                    float key = barHeight[key_index];
+
+                    while (curr_index >= 0 && barHeight[curr_index] > key) {
+                        barHeight[curr_index + 1] = barHeight[curr_index];
+                        curr_index--;
                     }
-                    barHeight[j + 1] = key;
-                    Thread.sleep(2);
+                    barHeight[curr_index + 1] = key;
+                    Thread.sleep(20);
                     repaint();
                 }
                 return null;
