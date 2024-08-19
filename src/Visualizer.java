@@ -4,15 +4,17 @@ import java.awt.geom.Rectangle2D;
 import java.util.Random;
 
 public class Visualizer extends JPanel {
+    private final JLabel LABEL = new JLabel("<html><font size='5'color=white> INSERTION SORT </font></html>");
     private final int WIDTH = 1000;
     private final int HEIGHT = WIDTH * 9 / 16;
-    private final int SIZE = 200;
+    private final int SIZE = 100;
     private final float BAR_WIDTH = (float) WIDTH / SIZE;
     private final float[] barHeight = new float[SIZE];
     private SwingWorker<Void, Void> shuffler, sorter;
     private int curr_index, key_index;
 
     private Visualizer() {
+        add(LABEL);
         setBackground(Color.BLACK);
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
         initBarHeight();
@@ -27,14 +29,14 @@ public class Visualizer extends JPanel {
         Graphics2D g2d = (Graphics2D) g;
         Rectangle2D bar;
         for (int i = 0; i < SIZE; i++) {
-            g2d.setColor(Color.CYAN);
-            if (i == curr_index ) {
-                g2d.setColor(Color.yellow);
+            g2d.setColor(Color.ORANGE);
+            if (i == curr_index) {
+                g2d.setColor(Color.GREEN);
             }
-            if(i==key_index){
+            if (i == key_index) {
                 g2d.setColor(Color.red);
             }
-            bar = new Rectangle2D.Float(i * BAR_WIDTH, 0, BAR_WIDTH, barHeight[i]);
+            bar = new Rectangle2D.Float(i * BAR_WIDTH, HEIGHT - barHeight[i], BAR_WIDTH, barHeight[i]);
             g2d.fill(bar);
         }
     }
@@ -60,8 +62,8 @@ public class Visualizer extends JPanel {
                     }
                     barHeight[curr_index + 1] = key;
                     Thread.sleep(20);
-                    if(key_index==SIZE-1){
-                        curr_index=-1;
+                    if (key_index == SIZE - 1) {
+                        curr_index = -1;
                     }
                     repaint();
                 }
